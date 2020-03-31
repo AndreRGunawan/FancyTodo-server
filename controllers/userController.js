@@ -1,7 +1,7 @@
 const { User } = require("../models/index.js")
 const { decryptPassword } = require("../helpers/bcrypt.js")
 
-const generateToken = require("../helpers/jwt.js")
+const { generateToken } = require("../helpers/jwt.js")
 
 class UserController {
     static signUp(req,res) {
@@ -26,8 +26,6 @@ class UserController {
             })
         })
         .catch(err => {
-            console.log(err,'errrorrrrrrrrrr');
-            
             res.status(500).json(err)
         })
     }
@@ -55,20 +53,23 @@ class UserController {
                         access_token : token
                     })
                 } else {
-                    res.status(500).json({
+                    res.status(400).json({
                         type:"Bad request", 
                         message: "Invalid email/password"
                     })
                 }
             } else {
-                res.status(500).json({
+                res.status(400).json({
                     type:"Bad request", 
                     message: "Invalid email/password"
                 })
             }
         })
         .catch(err =>{
-            res.status(500).json(err)
+            res.status(500).json({
+                type: "Internal Server Error",
+                message : err
+            })
         })
     }
 }

@@ -2,7 +2,11 @@ const { Todo } = require("../models/index.js")
 
 class TodoController {
     static findAll(req,res){
-        Todo.findAll()
+        Todo.findAll({
+            where:{
+                UserId : req.currentUserId
+            }
+        })
         .then(result => {
             res.status(200).json({
                 Message: "All to-dos successfully read", 
@@ -11,8 +15,8 @@ class TodoController {
         })
         .catch(error => {
             res.status(500).json({
-                Message: "Failed to read to-dos list", 
-                error: error
+                type: "Internal Server Error",
+                message : [{error}]
             })
         })
     }
@@ -22,21 +26,36 @@ class TodoController {
             .then(result => {
                 res.status(200).json({
                     Message: `Selected to-dos with id : ${id} successfully read`, 
-                    allTodos: result
+                    todo: result
                 })
             })
-            .catch(err =>{
-                res.status(500).json(err)
+            .catch(error =>{
+                res.status(500).json({
+                    type: "Internal Server Error",
+                    message : [{error}]
+                })
             })
     }
     static addNewToDo(req,res){
         let { title, description, status, due_date } = req.body
-        Todo.create({title, description, status, due_date})
+        let payload = { 
+            title, 
+            description, 
+            status, 
+            due_date,
+            UserId : req.currentUserId 
+        }
+        Todo.create(payload)
             .then(result => {
-                res.status(201).json(result)
+                res.status(201).json({
+                    todo: result
+                })
             })
-            .catch(err => {
-                res.status(500).json(err)
+            .catch(error => {
+                res.status(500).json({
+                    type: "Internal Server Error",
+                    message : [{error}]
+                })
             })
     }
     static update(req,res){
@@ -49,10 +68,13 @@ class TodoController {
             returning: true
         })
         .then(result => {
-            res.status(200).json(result)
+            res.status(200).json({todo:result})
         })
-        .catch(err => {
-            res.status(500).json(err)
+        .catch(error => {
+            res.status(500).json({
+                type: "Internal Server Error",
+                message : [{error}]
+            })
         })
     }
     static delete(req,res){
@@ -73,8 +95,11 @@ class TodoController {
                 deletedData : deletedData
             })
         })
-        .catch(err => {
-            res.status(500).json(err)
+        .catch(error => {
+            res.status(500).json({
+                type: "Internal Server Error",
+                message : [{error}]
+            })
         })
     }
 }
