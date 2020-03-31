@@ -16,21 +16,35 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         CheckIfNull(title){
           if(!title){
-            throw new Error ("Title tidak boleh kosong!")
+            throw new Error ("Title cannot be empty!")
           }
         }
       } 
     },
-    description: DataTypes.STRING,
-    status: DataTypes.BOOLEAN,
+    description: {
+      type:DataTypes.STRING,
+      validate: {
+        CheckIFNull(description){
+          if(!description){
+            throw new Error ("Description cannot be empty!")
+          }
+        }
+      }
+    },
+    status: {
+      type:DataTypes.BOOLEAN,
+      defaultValue: false
+    },
     due_date: {
       type:DataTypes.DATE,
       validate: {
         CheckIfDateExpired(date){
           let currentDate = new Date ()
-          if(date < currentDate){
-            throw new Error ("Title tidak boleh kosong!")
-          }
+          var insertedDate = new Date(date); 
+          //Jika currentDate lebih baru daripada insertedDate, maka...
+          if (currentDate.getTime() > insertedDate.getTime()){
+            throw new Error ("The date you entered has passed. Please choose a different date!")
+          } 
         }
       }
     }

@@ -10,14 +10,20 @@ class TodoController {
             })
         })
         .catch(error => {
-            res.status(500).json(err)
+            res.status(500).json({
+                Message: "Failed to read to-dos list", 
+                error: error
+            })
         })
     }
     static findOne(req,res){
         let { id } = req.params
         Todo.findByPk(id)
             .then(result => {
-                res.status(200).json(result)
+                res.status(200).json({
+                    Message: `Selected to-dos with id : ${id} successfully read`, 
+                    allTodos: result
+                })
             })
             .catch(err =>{
                 res.status(500).json(err)
@@ -39,10 +45,8 @@ class TodoController {
         Todo.update({title, description, status, due_date}, {
             where: {
                 id: id
-            }
-        })
-        .then(_ => {
-            return Todo.findByPk(id)
+            },
+            returning: true
         })
         .then(result => {
             res.status(200).json(result)
@@ -55,15 +59,15 @@ class TodoController {
         let { id } = req.params
         let deletedData
         Todo.findByPk(id)
-        .then(result1 =>{
-            deletedData = result1
+        .then(result =>{
+            deletedData = result
             return Todo.destroy({
                 where:{ 
                     id : id 
                 }}
             )
         })
-        .then(result2 => {
+        .then(_ => {
             res.status(200).json({
                 message: "Todo successfully deleted",
                 deletedData : deletedData
