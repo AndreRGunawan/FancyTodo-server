@@ -17,12 +17,11 @@ function authentication(req,res,next){
                 return next()
             } else {
                 //error : kalau user tidak ketemu
-                return res.status(404).json({
+                return next({
                     name:"User Not Found", 
-                    error: [{message: "User Not Found"}]
+                    errors: [{message: "User Not Found"}]
                 })
             }
-        
         })
         .catch(error => {
             //error : kalau prosesfindOne gagal karena user unauthorized to make that request

@@ -18,9 +18,9 @@ function authorization(req, res, next){
                 })
             }
         } else {
-            return res.status(404).json({
+            return next({
                 name:"User Not Found", 
-                error: [{message: "User Not Found"}]
+                errors: [{message: "User Not Found"}]
             })
         }
     })
