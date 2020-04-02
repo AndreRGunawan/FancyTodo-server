@@ -14,7 +14,7 @@ class TodoController {
             })
         })
         .catch(error => {
-            return res.next({
+            return next({
                 name: "Internal Server Error",
                 errors : [{ error }]
             })
@@ -30,13 +30,15 @@ class TodoController {
                 })
             })
             .catch(error =>{
-                return res.next({
+                return next({
                     name: "Internal Server Error",
                     errors : [{ error }]
                 })
             })
     }
     static addNewToDo(req,res,next){
+        console.log('masuk add new todo');
+        
         let { title, description, status, due_date } = req.body
         let payload = { 
             title, 
@@ -47,18 +49,21 @@ class TodoController {
         }
         Todo.create(payload)
             .then(result => {
+                console.log(result,'resultttttttttttt')
                 res.status(201).json({
                     todo: result
                 })
             })
             .catch(error => {
-                return res.next({
+                console.log(error,'erororr')
+                return next({
                     name: "Internal Server Error",
                     errors : [{ error }]
                 })
             })
     }
     static update(req,res,next){
+
         let { title, description, status, due_date} = req.body
         let { id } = req.params
         Todo.update({title, description, status, due_date}, {
@@ -71,7 +76,8 @@ class TodoController {
             res.status(200).json({todo:result})
         })
         .catch(error => {
-            return res.next({
+            console.log(error)
+            return next({
                 name: "Internal Server Error",
                 errors : [{ error }]
             })
@@ -96,7 +102,7 @@ class TodoController {
             })
         })
         .catch(error => {
-            return res.next({
+            return next({
                 name: "Internal Server Error",
                 errors : [{ error }]
             })

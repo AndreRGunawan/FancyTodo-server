@@ -47,7 +47,10 @@ module.exports = (sequelize, DataTypes) => {
           } 
         }
       }
-    }
+    },
+    UserId: {
+      type:DataTypes.INTEGER
+    },
   }, {
     // Other model options go here
     sequelize, // We need to pass the connection instance
