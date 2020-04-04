@@ -79,51 +79,56 @@ class UserController {
         })
     }
     static googleSign(req,res,next){
-        const client = new OAuth2Client(process.env.CLIENT_ID)
+        const client = new OAuth2Client(process.env.CLIENT_ID);
+        let email = ""
         client.verifyIdToken({
-            idToken: req.body.id_token,
-            audience: process.env.CLIENT_ID  // Specify the CLIENT_ID of the app that accesses the backend
-            // Or, if multiple clients access the backend:
-            //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
+            idToken:req.body.id_token,
+            audience: process.env.CLIENT_ID
         })
-            .then(ticket => {
-                email = ticket.getPayload().email
-                return User.findOne({where:{
-                    email
-                }})
-            })
-            .then(data => {
-                if(data){
-                    let payload = {
-                        id: data.id,
-                        email: data.email
-                    }
-                    let token = generateToken(payload)
-                    res.status(200).json({
-                        id : data.id,
-                        email : data.email,
-                        token : token
-                    })
-                } else {
-                    user.create({
-                        email,
-                        password: "google123"
-                    })
+        .then(ticket => {
+            // console.log(ticket, "INI ADALAH TICKET")
+            email = ticket.getPayload().email //get payload adalah function buatan google untuk ambil email dari ticket
+            return User.findOne({
+                where:{
+                    email : email //di mana email dari ticket sama dengan email di database kita
                 }
             })
-            .then(data => {
-                let payload = {
+        })
+        .then(data => {
+            if (data){ //kalau emailnya ada--pengguna telah ter-register
+                let user = {
                     id: data.id,
                     email: data.email
                 }
-                let token = generateToken(payload)
-                    res.status(201).json({
-                        id : data.id,
-                        email : data.email,
-                        token : token
-                    })
+                let token = generateToken(user)
+                res.status(200).json({
+                    id : data.id,
+                    email : data.email,
+                    access_token : token
+                })
+            } else {
+                return User.create({
+                    email,
+                    password:"Google123"
+                })
+            }
+        })
+        .then(data =>{ //kalau tidak ada, kita buatkan, kemudian kita sign-in-kan di sini
+            let user = {
+                id: data.id,
+                email: data.email
+            }
+            let token = generateToken(user)
+            res.status(201).json({ //201 karena kita sudah menambahkan
+                id : data.id,
+                email : data.email,
+                access_token : token
             })
-            .catch(next)
+            
+        })
+        .catch(error => {
+            console.log(error, "error di google signin")
+        })
     }
 }
 

@@ -9,6 +9,6 @@ const apiRouter = require("./apiRouter.js")
 
 router.use('/', userRouter)
 router.use('/todos', todoRouter)
-// router.use('/api', apiRouter)
+router.use('/api', apiRouter)
 
 module.exports = router

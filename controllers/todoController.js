@@ -62,8 +62,8 @@ class TodoController {
                 })
             })
     }
+    
     static update(req,res,next){
-
         let { title, description, status, due_date} = req.body
         let { id } = req.params
         Todo.update({title, description, status, due_date}, {
@@ -81,6 +81,53 @@ class TodoController {
                 name: "Internal Server Error",
                 errors : [{ error }]
             })
+        })
+    }
+    static completeTaskStatus(req,res,next){
+        let { id } = req.params
+        Todo.findByPk(id)
+        .then(result => {
+            console.log(result.title)
+            let updatedData = {
+                title : result.title, 
+                description : result.description, 
+                status: true, 
+                due_date: result.due_date
+            }
+            console.log(updatedData)
+            return Todo.update(updatedData, {where:{
+                    id:id
+                }, returning:true
+            })
+        })
+        .then(result => {
+            res.status(200).json({todo:result})
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    }
+    static uncompleteTaskStatus(req,res, next){
+        let { id } = req.params
+        Todo.findByPk(id)
+        .then(result => {
+            console.log(result.title)
+            let updatedData = {
+                title : result.title, 
+                description : result.description, 
+                status: false, 
+                due_date: result.due_date
+            }
+            return Todo.update(updatedData, {where:{
+                    id:id
+                }, returning:true
+            })
+        })
+        .then(result => {
+            res.status(200).json({todo:result})
+        })
+        .catch(error => {
+            console.log(error)
         })
     }
     static delete(req,res){

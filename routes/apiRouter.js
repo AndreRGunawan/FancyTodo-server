@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const apiController = require("../controllers/apiController.js")
 
-// router.get('/sendNotifEmail', apiController.sendNotifEmail)
+router.get('/productivitytips', apiController.showProductivityTips)
 
 module.exports = router
