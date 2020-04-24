@@ -12,7 +12,6 @@ class UserController {
         User.create(payload)
         .then(result => {
             //di sini kita perlu memilah result ke dalam object baru, supaya password tidak ikut dalam token
-            console.log(result)
             let user = {
                 id: result.id,
                 email: result.email            
@@ -73,7 +72,8 @@ class UserController {
             return next({
                 name:"InternalServerError", 
                 errors: [{
-                    message: "Invalid email/password"
+                    message: "InternalServerError",
+                    errors:err
                 }]    
             })
         })

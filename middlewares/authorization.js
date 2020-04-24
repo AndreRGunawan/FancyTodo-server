@@ -8,6 +8,7 @@ function authorization(req, res, next){
     })
     .then(result => {
         if(result){
+            console.log(req.currentUserId)
             if(result.UserId == req.currentUserId){
                 return next()
             } else {
@@ -24,7 +25,6 @@ function authorization(req, res, next){
         }
     })
     .catch(error =>{
-        console.log(error)
         res.status(500).json({
             name: "Internal Server Error",
             error: [{message: error}]

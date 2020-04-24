@@ -2,6 +2,10 @@ const { verifyToken } = require("../helpers/jwt.js")
 const { User } = require("../models/index.js")
 
 function authentication(req,res,next){
+    // parameter req, res, next
+    // use try, and fail
+    // decode token from req.headers -- findUser with id from decoded token -- 
+    // if user registered, save result.id as req.currentUserId
     try {
         let decoded = verifyToken(req.headers.access_token)
         User.findOne({where:{

@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         isEmail : {
           args: true,
-          msg: "Provided email must follow email format"
+          msg: "Submitted email must follow email format"
         }
       }
     },
